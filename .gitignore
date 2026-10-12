@@ -1,0 +1,20 @@
+node_modules/
+dist/
+coverage/
+
+# Local environment files (keep real credentials out of Git)
+.env
+.env.*
+!.env.example
+
+# Local runtime data and logs
+.runtime/
+uploads/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# TypeScript and OS-generated files
+*.tsbuildinfo
+.DS_Store
