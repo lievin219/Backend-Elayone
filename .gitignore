@@ -18,3 +18,5 @@ pnpm-debug.log*
 # TypeScript and OS-generated files
 *.tsbuildinfo
 .DS_Store
+.env
+node_modules
