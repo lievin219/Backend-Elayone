@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "build": "prisma generate && tsc",
+    "postinstall": "prisma generate",
     "predev": "npm run db:generate",
     "dev": "tsx watch src/index.ts",
     "prestart": "npm run db:generate",
