@@ -1,0 +1,110 @@
+2026-10-01 14:20:34.449 CAT [6956] LOG:  starting PostgreSQL 16.15 (Homebrew) on x86_64-apple-darwin21.6.0, compiled by Apple clang version 14.0.0 (clang-1400.0.29.202), 64-bit
+2026-10-01 14:20:34.464 CAT [6956] LOG:  listening on IPv6 address "::1", port 5433
+2026-10-01 14:20:34.465 CAT [6956] LOG:  listening on IPv4 address "127.0.0.1", port 5433
+2026-10-01 14:20:34.473 CAT [6956] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5433"
+2026-10-01 14:20:34.528 CAT [6959] LOG:  database system was shut down at 2026-10-01 11:01:50 CAT
+2026-10-01 14:20:34.574 CAT [6956] LOG:  database system is ready to accept connections
+2026-10-01 14:20:43.416 CAT [7444] ERROR:  syntax error at or near "\" at character 124
+2026-10-01 14:20:43.416 CAT [7444] STATEMENT:  SELECT 'CREATE DATABASE elayone OWNER learnliferwanda' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'elayone')\gexec
+2026-10-01 14:20:51.944 CAT [7598] ERROR:  database "elayone" already exists
+2026-10-01 14:20:51.944 CAT [7598] STATEMENT:  CREATE DATABASE elayone OWNER learnliferwanda;
+2026-10-01 14:20:52.093 CAT [7600] FATAL:  database "learnliferwanda" does not exist
+2026-10-01 14:21:18.642 CAT [6957] LOG:  checkpoint starting: immediate force wait
+2026-10-01 14:21:18.659 CAT [6957] LOG:  checkpoint complete: wrote 10 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.004 s, sync=0.007 s, total=0.017 s; sync files=9, longest=0.004 s, average=0.001 s; distance=4609 kB, estimate=4609 kB; lsn=0/26FACB8, redo lsn=0/26FAC80
+2026-10-01 14:21:19.569 CAT [6957] LOG:  checkpoint starting: immediate force wait
+2026-10-01 14:21:19.584 CAT [6957] LOG:  checkpoint complete: wrote 15 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.003 s, sync=0.005 s, total=0.016 s; sync files=13, longest=0.003 s, average=0.001 s; distance=4603 kB, estimate=4608 kB; lsn=0/2B79AA0, redo lsn=0/2B79A68
+2026-10-01 14:26:21.905 CAT [6957] LOG:  checkpoint starting: time
+2026-10-01 14:26:22.024 CAT [6957] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.108 s, sync=0.003 s, total=0.119 s; sync files=2, longest=0.002 s, average=0.002 s; distance=0 kB, estimate=4147 kB; lsn=0/2B79C18, redo lsn=0/2B79BE0
+2026-10-01 14:41:21.334 CAT [6957] LOG:  checkpoint starting: time
+2026-10-01 14:41:21.652 CAT [6957] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.308 s, sync=0.003 s, total=0.319 s; sync files=4, longest=0.002 s, average=0.001 s; distance=1 kB, estimate=3733 kB; lsn=0/2B7A080, redo lsn=0/2B7A048
+2026-10-01 14:46:21.654 CAT [6957] LOG:  checkpoint starting: time
+2026-10-01 14:46:22.682 CAT [6957] LOG:  checkpoint complete: wrote 11 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.020 s, sync=0.004 s, total=1.029 s; sync files=9, longest=0.002 s, average=0.001 s; distance=3 kB, estimate=3360 kB; lsn=0/2B7ADD0, redo lsn=0/2B7AD98
+2026-10-01 16:25:19.734 CAT [6957] LOG:  checkpoint starting: time
+2026-10-01 16:25:20.070 CAT [6957] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.321 s, sync=0.004 s, total=0.348 s; sync files=4, longest=0.002 s, average=0.001 s; distance=1 kB, estimate=3024 kB; lsn=0/2B7B418, redo lsn=0/2B7B3E0
+2026-10-01 16:30:20.861 CAT [6957] LOG:  checkpoint starting: time
+2026-10-01 16:30:21.009 CAT [6957] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.118 s, sync=0.005 s, total=0.150 s; sync files=2, longest=0.005 s, average=0.003 s; distance=1 kB, estimate=2722 kB; lsn=0/2B7B868, redo lsn=0/2B7B830
+2026-10-01 16:54:00.941 CAT [6957] LOG:  checkpoint starting: immediate force wait
+2026-10-01 16:54:00.997 CAT [6957] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.039 s, sync=0.003 s, total=0.059 s; sync files=4, longest=0.002 s, average=0.001 s; distance=4599 kB, estimate=4599 kB; lsn=0/2FF9850, redo lsn=0/2FF9818
+2026-10-01 16:54:02.261 CAT [6957] LOG:  checkpoint starting: immediate force wait
+2026-10-01 16:54:02.286 CAT [6957] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 1 recycled; write=0.004 s, sync=0.007 s, total=0.026 s; sync files=4, longest=0.004 s, average=0.002 s; distance=4600 kB, estimate=4600 kB; lsn=0/3477BD8, redo lsn=0/3477BA0
+2026-10-01 16:54:02.988 CAT [6957] LOG:  checkpoint starting: immediate force wait
+2026-10-01 16:54:03.040 CAT [6957] LOG:  checkpoint complete: wrote 10 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.022 s, sync=0.019 s, total=0.053 s; sync files=10, longest=0.005 s, average=0.002 s; distance=4632 kB, estimate=4632 kB; lsn=0/38FDF60, redo lsn=0/38FDF28
+2026-10-01 16:59:02.052 CAT [6957] LOG:  checkpoint starting: time
+2026-10-01 16:59:02.481 CAT [6957] LOG:  checkpoint complete: wrote 5 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.413 s, sync=0.003 s, total=0.429 s; sync files=5, longest=0.002 s, average=0.001 s; distance=8 kB, estimate=4170 kB; lsn=0/38FFFC8, redo lsn=0/38FFF90
+2026-10-01 17:01:05.762 CAT [6957] LOG:  checkpoint starting: immediate force wait
+2026-10-01 17:01:05.770 CAT [6957] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.005 s, sync=0.001 s, total=0.008 s; sync files=4, longest=0.001 s, average=0.001 s; distance=4601 kB, estimate=4601 kB; lsn=0/3D7E538, redo lsn=0/3D7E500
+2026-10-01 17:01:06.380 CAT [6957] LOG:  checkpoint starting: immediate force wait
+2026-10-01 17:01:06.394 CAT [6957] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 1 recycled; write=0.005 s, sync=0.001 s, total=0.015 s; sync files=4, longest=0.001 s, average=0.001 s; distance=4606 kB, estimate=4606 kB; lsn=0/41FDE70, redo lsn=0/41FDE38
+2026-10-01 17:01:07.051 CAT [6957] LOG:  checkpoint starting: immediate force wait
+2026-10-01 17:01:07.081 CAT [6957] LOG:  checkpoint complete: wrote 22 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.016 s, sync=0.014 s, total=0.031 s; sync files=20, longest=0.004 s, average=0.001 s; distance=4683 kB, estimate=4683 kB; lsn=0/4690C88, redo lsn=0/4690C50
+2026-10-01 17:06:07.086 CAT [6957] LOG:  checkpoint starting: time
+2026-10-01 17:06:08.432 CAT [6957] LOG:  checkpoint complete: wrote 14 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.332 s, sync=0.003 s, total=1.346 s; sync files=12, longest=0.002 s, average=0.001 s; distance=17 kB, estimate=4216 kB; lsn=0/4695460, redo lsn=0/4695428
+2026-10-01 17:10:36.920 CAT [6957] LOG:  checkpoint starting: immediate force wait
+2026-10-01 17:10:36.940 CAT [6957] LOG:  checkpoint complete: wrote 5 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.014 s, sync=0.004 s, total=0.021 s; sync files=5, longest=0.004 s, average=0.001 s; distance=4606 kB, estimate=4606 kB; lsn=0/4B14F70, redo lsn=0/4B14F38
+2026-10-01 17:10:37.642 CAT [6957] LOG:  checkpoint starting: immediate force wait
+2026-10-01 17:10:37.652 CAT [6957] LOG:  checkpoint complete: wrote 6 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.007 s, sync=0.001 s, total=0.011 s; sync files=6, longest=0.001 s, average=0.001 s; distance=4607 kB, estimate=4607 kB; lsn=0/4F94B80, redo lsn=0/4F94B48
+2026-10-01 17:15:37.657 CAT [6957] LOG:  checkpoint starting: time
+2026-10-01 17:15:38.090 CAT [6957] LOG:  checkpoint complete: wrote 5 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.410 s, sync=0.003 s, total=0.433 s; sync files=5, longest=0.002 s, average=0.001 s; distance=3 kB, estimate=4146 kB; lsn=0/4F95780, redo lsn=0/4F95748
+2026-10-01 17:20:37.094 CAT [6957] LOG:  checkpoint starting: time
+2026-10-01 17:20:38.127 CAT [6957] LOG:  checkpoint complete: wrote 11 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.023 s, sync=0.003 s, total=1.034 s; sync files=11, longest=0.001 s, average=0.001 s; distance=6 kB, estimate=3732 kB; lsn=0/4F97320, redo lsn=0/4F972E8
+2026-10-02 09:40:08.058 CAT [6957] LOG:  checkpoint starting: time
+2026-10-02 09:40:08.215 CAT [6957] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.142 s, sync=0.003 s, total=0.160 s; sync files=2, longest=0.002 s, average=0.001 s; distance=1 kB, estimate=3359 kB; lsn=0/4F978B0, redo lsn=0/4F97878
+2026-10-02 09:50:08.137 CAT [6957] LOG:  checkpoint starting: time
+2026-10-02 09:50:08.879 CAT [6957] LOG:  checkpoint complete: wrote 8 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.724 s, sync=0.004 s, total=0.743 s; sync files=8, longest=0.002 s, average=0.001 s; distance=3 kB, estimate=3023 kB; lsn=0/4F98630, redo lsn=0/4F985F8
+2026-10-02 10:00:08.886 CAT [6957] LOG:  checkpoint starting: time
+2026-10-02 10:00:09.747 CAT [6957] LOG:  checkpoint complete: wrote 9 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.821 s, sync=0.008 s, total=0.862 s; sync files=9, longest=0.003 s, average=0.001 s; distance=6 kB, estimate=2722 kB; lsn=0/4F9A020, redo lsn=0/4F99FD0
+2026-10-02 10:05:08.843 CAT [6957] LOG:  checkpoint starting: time
+2026-10-02 10:05:09.378 CAT [6957] LOG:  checkpoint complete: wrote 6 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.522 s, sync=0.003 s, total=0.535 s; sync files=6, longest=0.002 s, average=0.001 s; distance=5 kB, estimate=2450 kB; lsn=0/4F9B730, redo lsn=0/4F9B6F8
+2026-10-02 10:25:08.515 CAT [6957] LOG:  checkpoint starting: time
+2026-10-02 10:25:08.871 CAT [6957] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.341 s, sync=0.003 s, total=0.357 s; sync files=4, longest=0.002 s, average=0.001 s; distance=1 kB, estimate=2205 kB; lsn=0/4F9BD18, redo lsn=0/4F9BCE0
+2026-10-02 10:40:08.898 CAT [6957] LOG:  checkpoint starting: time
+2026-10-02 10:40:09.233 CAT [6957] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.316 s, sync=0.003 s, total=0.336 s; sync files=4, longest=0.002 s, average=0.001 s; distance=2 kB, estimate=1985 kB; lsn=0/4F9C5C8, redo lsn=0/4F9C590
+2026-10-02 10:45:08.242 CAT [6957] LOG:  checkpoint starting: time
+2026-10-02 10:45:08.584 CAT [6957] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.311 s, sync=0.011 s, total=0.346 s; sync files=4, longest=0.005 s, average=0.003 s; distance=1 kB, estimate=1786 kB; lsn=0/4F9CD80, redo lsn=0/4F9CD48
+2026-10-02 10:55:08.163 CAT [6957] LOG:  checkpoint starting: time
+2026-10-02 10:55:08.320 CAT [6957] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.115 s, sync=0.003 s, total=0.158 s; sync files=2, longest=0.003 s, average=0.002 s; distance=1 kB, estimate=1608 kB; lsn=0/4F9D398, redo lsn=0/4F9D360
+2026-10-02 11:31:49.202 CAT [41019] FATAL:  database "learnliferwanda" does not exist
+2026-10-02 11:31:57.353 CAT [6957] LOG:  checkpoint starting: immediate force wait
+2026-10-02 11:31:57.372 CAT [6957] LOG:  checkpoint complete: wrote 5 buffers (0.0%); 0 WAL file(s) added, 0 removed, 1 recycled; write=0.013 s, sync=0.001 s, total=0.023 s; sync files=5, longest=0.001 s, average=0.001 s; distance=4607 kB, estimate=4607 kB; lsn=0/541D0B8, redo lsn=0/541D080
+2026-10-02 11:31:58.044 CAT [6957] LOG:  checkpoint starting: immediate force wait
+2026-10-02 11:31:58.053 CAT [6957] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.009 s; sync files=4, longest=0.001 s, average=0.001 s; distance=4607 kB, estimate=4607 kB; lsn=0/589CED8, redo lsn=0/589CEA0
+2026-10-02 11:32:43.122 CAT [41394] FATAL:  database "learnliferwanda" does not exist
+2026-10-02 11:36:58.034 CAT [6957] LOG:  checkpoint starting: time
+2026-10-02 11:36:58.152 CAT [6957] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.107 s, sync=0.003 s, total=0.119 s; sync files=2, longest=0.003 s, average=0.002 s; distance=0 kB, estimate=4146 kB; lsn=0/589D050, redo lsn=0/589D018
+2026-10-05 16:57:08.729 CAT [6957] LOG:  checkpoint starting: time
+2026-10-05 16:57:09.687 CAT [6957] LOG:  checkpoint complete: wrote 8 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.942 s, sync=0.004 s, total=0.964 s; sync files=5, longest=0.003 s, average=0.001 s; distance=1 kB, estimate=3732 kB; lsn=0/589D7B0, redo lsn=0/589D778
+2026-10-07 12:29:50.516 CAT [6957] LOG:  checkpoint starting: time
+2026-10-07 12:29:55.160 CAT [6957] LOG:  checkpoint complete: wrote 41 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=4.530 s, sync=0.016 s, total=4.655 s; sync files=39, longest=0.004 s, average=0.001 s; distance=156 kB, estimate=3374 kB; lsn=0/58C4980, redo lsn=0/58C4948
+2026-10-07 13:30:16.834 CAT [23819] FATAL:  database "learnliferwanda" does not exist
+2026-10-07 13:31:22.168 CAT [25625] ERROR:  column "choirid" does not exist at character 32
+2026-10-07 13:31:22.168 CAT [25625] HINT:  Perhaps you meant to reference the column "Song.choirId".
+2026-10-07 13:31:22.168 CAT [25625] STATEMENT:  SELECT id, title, key, status, choirId FROM "Song" ORDER BY id;
+2026-10-07 13:31:45.145 CAT [26550] ERROR:  column "choirid" does not exist at character 32
+2026-10-07 13:31:45.145 CAT [26550] HINT:  Perhaps you meant to reference the column "Song.choirId".
+2026-10-07 13:31:45.145 CAT [26550] STATEMENT:  SELECT id, title, key, status, choirid FROM "Song" ORDER BY id;
+2026-10-07 13:31:50.184 CAT [26948] ERROR:  column es.rehearsalid does not exist at character 133
+2026-10-07 13:31:50.184 CAT [26948] HINT:  Perhaps you meant to reference the column "es.rehearsalId".
+2026-10-07 13:31:50.184 CAT [26948] STATEMENT:  SELECT rs.id AS rehearsal_id, sg.id AS song_id, rs.title, sg.title AS song_title FROM "EventSong" es JOIN "Rehearsal" rs ON rs.id = es.rehearsalid JOIN "Song" sg ON sg.id = es.songid ORDER BY rs.id;
+2026-10-07 13:32:10.998 CAT [27300] ERROR:  column "choirid" does not exist at character 32
+2026-10-07 13:32:10.998 CAT [27300] HINT:  Perhaps you meant to reference the column "Song.choirId".
+2026-10-07 13:32:10.998 CAT [27300] STATEMENT:  SELECT id, title, key, status, choirid FROM "Song" ORDER BY id;
+2026-10-07 13:32:16.402 CAT [27713] ERROR:  column es.rehearsalid does not exist at character 133
+2026-10-07 13:32:16.402 CAT [27713] HINT:  Perhaps you meant to reference the column "es.rehearsalId".
+2026-10-07 13:32:16.402 CAT [27713] STATEMENT:  SELECT rs.id AS rehearsal_id, sg.id AS song_id, rs.title, sg.title AS song_title FROM "EventSong" es JOIN "Rehearsal" rs ON rs.id = es.rehearsalid JOIN "Song" sg ON sg.id = es.songid ORDER BY rs.id;
+2026-10-07 13:32:26.227 CAT [28195] ERROR:  column "choirid" does not exist at character 32
+2026-10-07 13:32:26.227 CAT [28195] HINT:  Perhaps you meant to reference the column "Song.choirId".
+2026-10-07 13:32:26.227 CAT [28195] STATEMENT:  SELECT id, title, key, status, choirId FROM "Song" ORDER BY id;
+2026-10-07 13:32:26.569 CAT [28393] ERROR:  column es.rehearsalid does not exist at character 133
+2026-10-07 13:32:26.569 CAT [28393] HINT:  Perhaps you meant to reference the column "es.rehearsalId".
+2026-10-07 13:32:26.569 CAT [28393] STATEMENT:  SELECT rs.id AS rehearsal_id, sg.id AS song_id, rs.title, sg.title AS song_title FROM "EventSong" es JOIN "Rehearsal" rs ON rs.id = es.rehearsalId JOIN "Song" sg ON sg.id = es.songId ORDER BY rs.id;
+2026-10-07 13:32:34.429 CAT [28705] ERROR:  column "choirid" does not exist at character 32
+2026-10-07 13:32:34.429 CAT [28705] HINT:  Perhaps you meant to reference the column "Song.choirId".
+2026-10-07 13:32:34.429 CAT [28705] STATEMENT:  SELECT id, title, key, status, choirId FROM "Song" ORDER BY id;
+2026-10-07 13:44:50.195 CAT [6957] LOG:  checkpoint starting: time
+2026-10-07 13:44:52.589 CAT [6957] LOG:  checkpoint complete: wrote 23 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=2.358 s, sync=0.006 s, total=2.405 s; sync files=21, longest=0.003 s, average=0.001 s; distance=10 kB, estimate=3038 kB; lsn=0/58C72A8, redo lsn=0/58C7270
+2026-10-07 14:09:50.606 CAT [6957] LOG:  checkpoint starting: time
+2026-10-07 14:09:50.813 CAT [6957] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.175 s, sync=0.003 s, total=0.228 s; sync files=2, longest=0.002 s, average=0.002 s; distance=2 kB, estimate=2734 kB; lsn=0/58C7CD0, redo lsn=0/58C7C98
+2026-10-07 14:19:50.853 CAT [6957] LOG:  checkpoint starting: time
+2026-10-07 14:19:52.126 CAT [6957] LOG:  checkpoint complete: wrote 13 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.265 s, sync=0.004 s, total=1.274 s; sync files=13, longest=0.003 s, average=0.001 s; distance=9 kB, estimate=2462 kB; lsn=0/58CA4B0, redo lsn=0/58CA478
+2026-10-07 15:20:36.127 CAT [6957] LOG:  checkpoint starting: time
+2026-10-07 15:20:36.345 CAT [6957] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.183 s, sync=0.003 s, total=0.246 s; sync files=2, longest=0.002 s, average=0.002 s; distance=2 kB, estimate=2216 kB; lsn=0/58CAE10, redo lsn=0/58CADD8

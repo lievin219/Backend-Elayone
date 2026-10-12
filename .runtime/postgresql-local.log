@@ -1,0 +1,44 @@
+2026-10-09 18:20:29.782 CAT [50696] LOG:  starting PostgreSQL 16.15 (Homebrew) on aarch64-apple-darwin27.0.0, compiled by Apple clang version 21.0.0 (clang-2100.3.34.2), 64-bit
+2026-10-09 18:20:29.784 CAT [50696] LOG:  listening on IPv6 address "::1", port 5433
+2026-10-09 18:20:29.784 CAT [50696] LOG:  listening on IPv4 address "127.0.0.1", port 5433
+2026-10-09 18:20:29.785 CAT [50696] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5433"
+2026-10-09 18:20:29.789 CAT [50699] LOG:  database system was shut down at 2026-10-09 18:20:29 CAT
+2026-10-09 18:20:29.791 CAT [50696] LOG:  database system is ready to accept connections
+2026-10-09 18:20:29.888 CAT [50704] FATAL:  database "llrw" does not exist
+2026-10-09 18:20:30.061 CAT [50734] FATAL:  database "llrw" does not exist
+2026-10-09 18:21:33.019 CAT [51048] FATAL:  database "llrw" does not exist
+2026-10-09 18:23:17.520 CAT [50697] LOG:  checkpoint starting: immediate force wait
+2026-10-09 18:23:17.523 CAT [50697] LOG:  checkpoint complete: wrote 16 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.003 s; sync files=15, longest=0.001 s, average=0.001 s; distance=4673 kB, estimate=4673 kB; lsn=0/2C1FB30, redo lsn=0/2C1FAF8
+2026-10-09 18:23:17.628 CAT [50697] LOG:  checkpoint starting: immediate force wait
+2026-10-09 18:23:17.630 CAT [50697] LOG:  checkpoint complete: wrote 17 buffers (0.1%); 0 WAL file(s) added, 0 removed, 1 recycled; write=0.001 s, sync=0.001 s, total=0.002 s; sync files=13, longest=0.001 s, average=0.001 s; distance=4671 kB, estimate=4673 kB; lsn=0/30AF9F8, redo lsn=0/30AF9C0
+2026-10-09 18:23:42.163 CAT [51872] FATAL:  database "llrw" does not exist
+2026-10-09 18:28:17.630 CAT [50697] LOG:  checkpoint starting: time
+2026-10-09 18:28:18.046 CAT [50697] LOG:  checkpoint complete: wrote 5 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.411 s, sync=0.001 s, total=0.416 s; sync files=5, longest=0.001 s, average=0.001 s; distance=3 kB, estimate=4206 kB; lsn=0/30B09C8, redo lsn=0/30B0990
+2026-10-10 21:00:53.633 CAT [5569] LOG:  starting PostgreSQL 16.15 (Homebrew) on aarch64-apple-darwin27.0.0, compiled by Apple clang version 21.0.0 (clang-2100.3.34.2), 64-bit
+2026-10-10 21:00:53.636 CAT [5569] LOG:  listening on IPv4 address "127.0.0.1", port 5433
+2026-10-10 21:00:53.636 CAT [5569] LOG:  listening on IPv6 address "::1", port 5433
+2026-10-10 21:00:53.638 CAT [5569] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5433"
+2026-10-10 21:00:53.644 CAT [5572] LOG:  database system was interrupted; last known up at 2026-10-09 18:28:18 CAT
+2026-10-10 21:00:53.706 CAT [5572] LOG:  database system was not properly shut down; automatic recovery in progress
+2026-10-10 21:00:53.707 CAT [5572] LOG:  redo starts at 0/30B0990
+2026-10-10 21:00:53.708 CAT [5572] LOG:  invalid record length at 0/30B0A78: expected at least 24, got 0
+2026-10-10 21:00:53.708 CAT [5572] LOG:  redo done at 0/30B0A40 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2026-10-10 21:00:53.709 CAT [5570] LOG:  checkpoint starting: end-of-recovery immediate wait
+2026-10-10 21:00:53.710 CAT [5570] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.001 s; sync files=2, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=0 kB; lsn=0/30B0A78, redo lsn=0/30B0A78
+2026-10-10 21:00:53.711 CAT [5569] LOG:  database system is ready to accept connections
+2026-10-10 21:00:53.848 CAT [5577] FATAL:  database "llrw" does not exist
+2026-10-10 21:00:55.063 CAT [5570] LOG:  checkpoint starting: immediate force wait
+2026-10-10 21:00:55.064 CAT [5570] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.001 s; sync files=4, longest=0.001 s, average=0.001 s; distance=4668 kB, estimate=4668 kB; lsn=0/353FAB0, redo lsn=0/353FA78
+2026-10-10 21:00:55.167 CAT [5570] LOG:  checkpoint starting: immediate force wait
+2026-10-10 21:00:55.168 CAT [5570] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.002 s; sync files=4, longest=0.001 s, average=0.001 s; distance=4668 kB, estimate=4668 kB; lsn=0/39CEC78, redo lsn=0/39CEC40
+2026-10-10 21:01:08.394 CAT [5793] FATAL:  database "llrw" does not exist
+2026-10-10 21:05:55.172 CAT [5570] LOG:  checkpoint starting: time
+2026-10-10 21:05:55.585 CAT [5570] LOG:  checkpoint complete: wrote 5 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.407 s, sync=0.002 s, total=0.414 s; sync files=5, longest=0.001 s, average=0.001 s; distance=4 kB, estimate=4202 kB; lsn=0/39CFDE0, redo lsn=0/39CFDA8
+2026-10-10 21:15:55.586 CAT [5570] LOG:  checkpoint starting: time
+2026-10-10 21:15:56.507 CAT [5570] LOG:  checkpoint complete: wrote 10 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.915 s, sync=0.002 s, total=0.922 s; sync files=10, longest=0.001 s, average=0.001 s; distance=4 kB, estimate=3782 kB; lsn=0/39D10B0, redo lsn=0/39D1078
+2026-10-10 21:46:04.043 CAT [5570] LOG:  checkpoint starting: time
+2026-10-10 21:46:04.757 CAT [5570] LOG:  checkpoint complete: wrote 8 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.710 s, sync=0.002 s, total=0.715 s; sync files=8, longest=0.001 s, average=0.001 s; distance=5 kB, estimate=3404 kB; lsn=0/39D2540, redo lsn=0/39D2508
+2026-10-10 22:31:34.098 CAT [5570] LOG:  checkpoint starting: time
+2026-10-10 22:31:34.614 CAT [5570] LOG:  checkpoint complete: wrote 6 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.509 s, sync=0.002 s, total=0.517 s; sync files=6, longest=0.001 s, average=0.001 s; distance=3 kB, estimate=3064 kB; lsn=0/39D31B8, redo lsn=0/39D3180
+2026-10-10 23:05:44.733 CAT [25277] FATAL:  database "llrw" does not exist
+2026-10-11 15:35:22.379 CAT [59279] FATAL:  database "llrw" does not exist

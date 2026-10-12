@@ -1,0 +1,28 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const people_1 = __importDefault(require("./choir/people"));
+const event_list_1 = __importDefault(require("./choir/event-list"));
+const attendance_summary_1 = __importDefault(require("./choir/attendance-summary"));
+const attendance_report_1 = __importDefault(require("./choir/attendance-report"));
+const attendance_response_1 = __importDefault(require("./choir/attendance-response"));
+const create_event_1 = __importDefault(require("./choir/create-event"));
+const event_songs_1 = __importDefault(require("./choir/event-songs"));
+const announcements_1 = __importDefault(require("./choir/announcements"));
+const reminders_1 = __importDefault(require("./choir/reminders"));
+const songs_1 = __importDefault(require("./choir/songs"));
+const router = (0, express_1.Router)();
+router.use(people_1.default);
+router.use(event_list_1.default);
+router.use(attendance_summary_1.default);
+router.use(attendance_report_1.default);
+router.use(attendance_response_1.default);
+router.use(create_event_1.default);
+router.use(event_songs_1.default);
+router.use(announcements_1.default);
+router.use(reminders_1.default);
+router.use(songs_1.default);
+exports.default = router;
