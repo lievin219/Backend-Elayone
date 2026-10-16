@@ -15,10 +15,10 @@ export class SongMediaConfigurationError extends Error {}
 
 function getStorageClient() {
   const url = process.env.SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_SECRET_KEY;
   if (!url || !serviceRoleKey) {
     throw new SongMediaConfigurationError(
-      'Song uploads are not configured. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY on the API server.',
+      'Song uploads are not configured. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY (or SUPABASE_SECRET_KEY) on the API server.',
     );
   }
   client ??= createClient(url, serviceRoleKey, {
