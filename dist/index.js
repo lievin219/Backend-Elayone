@@ -33,6 +33,7 @@ app.use((0, cors_1.default)({
     },
 }));
 app.use(express_1.default.json());
+app.use(express_1.default.urlencoded({ extended: false }));
 app.use('/uploads', express_1.default.static(node_path_1.default.resolve(process.cwd(), 'uploads')));
 app.get('/health', async (_request, response) => {
     try {

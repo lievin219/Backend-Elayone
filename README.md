@@ -25,9 +25,16 @@ Create a Supabase project in the Supabase dashboard and keep its database passwo
 - `JWT_SECRET`: a new, unique, randomly generated production signing secret.
 - `ADMIN_EMAIL` and `ADMIN_PASSWORD`: the initial administrator credentials; use a unique password of at least 12 characters.
 - `CORS_ORIGINS`: the exact HTTPS origin(s) serving the frontend, comma-separated, with no trailing slash.
+- `EMAIL_PROVIDER`: `smtp` (default) or `resend`. Use `resend` when the hosting provider blocks outbound SMTP.
+- `EMAIL_FROM`: a plain sender email address whose domain/address is verified with the email provider. For backward compatibility, SMTP also accepts `SMTP_FROM` if `EMAIL_FROM` is not set.
+- For `EMAIL_PROVIDER=smtp`, set `SMTP_HOST`, `SMTP_USER`, and `SMTP_PASSWORD`; `SMTP_PORT` defaults to `587`; `SMTP_SECURE` defaults to `true` on port `465` and `false` otherwise. Use the SMTP provider's app password or credential, not a personal account password.
+- For `EMAIL_PROVIDER=resend`, set `RESEND_API_KEY`. The API checks the key and verifies that the sender domain is verified in Resend before creating an account, then sends over HTTPS.
+- `API_PUBLIC_URL`: this API's public base URL, such as `https://api.example.com` in production or `http://localhost:4000` locally. Confirmation links use it; production requires HTTPS.
 - `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` (or `SUPABASE_SECRET_KEY`), and `SUPABASE_SONGS_BUCKET`: the Supabase project URL, server-only key, and public Storage bucket used for uploaded song media. The bucket defaults to `song-media`.
 
-Set these as **backend deployment secrets/environment variables**, not in frontend build settings or committed files. Keep the pooled and direct database URLs private, and never expose the service-role key to the frontend. Create the configured Storage bucket (`song-media` by default) in Supabase and make it public so song previews can be played by choir members. The app already uses Prisma's pooled URL for normal queries and the direct URL for schema changes.
+Set these as **backend deployment secrets/environment variables**, not in frontend build settings or committed files. Keep the pooled and direct database URLs private, and never expose the service-role key, SMTP credentials, or Resend API key to the frontend. Verify the sender domain (`EMAIL_FROM`) with your email provider and configure its recommended SPF/DKIM DNS records; credentials alone do not authorize an arbitrary sender. Before creating accounts, the API validates the sender and checks the SMTP connection/authentication or Resend API key/domain status. Some hosts, including Render, block outbound SMTP; configure `EMAIL_PROVIDER=resend` on those hosts to send over HTTPS. Create the configured Storage bucket (`song-media` by default) in Supabase and make it public so song previews can be played by choir members. The app already uses Prisma's pooled URL for normal queries and the direct URL for schema changes.
+
+When an administrator creates a singer or band account, the API emails the login credentials and a single-use confirmation link to that address. The member must confirm ownership before signing in; the link expires after 24 hours. Existing accounts are marked confirmed by the migration. If the selected email provider cannot be reached or authenticated, account creation is stopped. If sending fails after account creation, the API returns the account ID; an administrator can send a new link with `POST /api/users/:userId/email-verification/resend` rather than creating the account again. Members should change their temporary password after signing in.
 
 Deploy the API on a Node.js host. From the repository root, install and build it with `npm ci --prefix server` and `npm run server:build`. Set its start command to `npm run server:start` and configure the backend environment variables listed above in the host dashboard. The host must provide a public HTTPS API URL. Set `VITE_API_URL` to that API URL in the frontend hosting provider, then rebuild and deploy the frontend. The browser talks to the API, and only the API talks to Supabase.
 
@@ -90,6 +97,7 @@ The idea is to build once and reuse the same information across the WorshipTools
 
 Routes:
 
+- `GET /api/auth/verify-email` and `POST /api/auth/verify-email` (email confirmation)
 - `POST /api/auth/signup` (disabled; accounts are administrator-created)
 - `POST /api/auth/login`
 - `GET /api/choirs/me`
@@ -107,6 +115,7 @@ Routes:
 - `GET` and `POST /api/choirs/:choirId/songs`
 - `DELETE /api/choirs/:choirId/songs/:songId`
 - `GET` and `POST /api/users`
+- `POST /api/users/:userId/email-verification/resend`
 - `PATCH /api/users/:userId/role`
 - `PATCH /api/users/:userId/password` (administrator reset)
 - `PATCH /api/users/:userId/password/self`

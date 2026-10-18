@@ -26,8 +26,8 @@ async function main() {
 
   const admin = await prisma.user.upsert({
     where: { email: adminEmail },
-    update: { role: Role.ADMIN, passwordHash },
-    create: { name: 'Elayone Admin main', email: adminEmail, passwordHash, role: Role.ADMIN },
+    update: { role: Role.ADMIN, passwordHash, emailVerifiedAt: new Date() },
+    create: { name: 'Elayone Admin main', email: adminEmail, passwordHash, role: Role.ADMIN, emailVerifiedAt: new Date() },
   });
   await prisma.membership.upsert(
     { where: { userId_choirId: { userId: admin.id, choirId: choir.id } }, update: {}, create: { userId: admin.id, choirId: choir.id, ministryTeam: 'SINGERS' } }

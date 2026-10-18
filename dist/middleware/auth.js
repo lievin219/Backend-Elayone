@@ -13,7 +13,7 @@ function requireAuth(request, response, next) {
     const header = request.header('authorization');
     const token = header?.startsWith('Bearer ') ? header.slice(7) : undefined;
     if (!token)
-        return response.status(401).json({ message: 'Authentication is required.' });
+        return response.status(401).json({ message: 'Authentication is required. your token limit have reached' });
     try {
         const payload = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
         request.userId = payload.userId;
