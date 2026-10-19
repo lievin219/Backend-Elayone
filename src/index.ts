@@ -15,6 +15,10 @@ if (!process.env.DATABASE_URL || !process.env.JWT_SECRET) {
   throw new Error('Server configuration missing. Copy server/.env.example to server/.env, set DATABASE_URL and JWT_SECRET, and start PostgreSQL before running the API.');
 }
 
+process.on('unhandledRejection', (reason) => {
+  console.error('[process] Unhandled promise rejection:', reason);
+});
+
 const app = express();
 const allowedOrigins = new Set(
   (process.env.CORS_ORIGINS ?? 'http://localhost:5173,http://127.0.0.1:5173')
@@ -36,10 +40,11 @@ app.use('/uploads', express.static(path.resolve(process.cwd(), 'uploads')));
 app.get('/health', async (_request, response) => {
   try {
     await prisma.$queryRaw`SELECT 1`;
-    return response.json({ ok: true, service: 'elayone-choir-api', database: 'connected' });
+    await prisma.user.findFirst({ select: { id: true } });
+    return response.json({ ok: true, service: 'elayone-choir-api', database: 'connected', accounts: 'available' });
   } catch (error) {
-    console.error('[health] Database connection failed:', error);
-    return response.status(503).json({ ok: false, service: 'elayone-choir-api', database: 'unavailable', message: 'We’re having trouble connecting right now. Please wait a moment and try again.' });
+    console.error('[health] Database or account-table check failed:', error);
+    return response.status(503).json({ ok: false, service: 'elayone-choir-api', database: 'unavailable', accounts: 'unavailable', message: 'The API cannot read the account database. Check backend database configuration and migrations.' });
   }
 });
 app.use('/api/auth', authRoutes);

@@ -23,11 +23,28 @@ router.post('/signup', async (_request, response) => {
 router.post('/login', async (request, response) => {
   const parsed = credentials.omit({ name: true }).safeParse(request.body);
   if (!parsed.success) return response.status(400).json({ message: parsed.error.issues[0].message });
-  const user = await prisma.user.findUnique({ where: { email: parsed.data.email.toLowerCase() } });
+  let user;
+  try {
+    user = await prisma.user.findUnique({ where: { email: parsed.data.email.toLowerCase() } });
+  } catch (error) {
+    console.error('[auth/login] Could not query the user database:', error);
+    return response.status(503).json({ message: 'The sign-in service is temporarily unable to reach the account database. Please try again shortly.' });
+  }
   if (!user) return response.status(404).json({ message: 'No account uses that email. Check the address or ask your ministry administrator for help.' });
-  const valid = await bcrypt.compare(parsed.data.password, user.passwordHash);
+  let valid: boolean;
+  try {
+    valid = await bcrypt.compare(parsed.data.password, user.passwordHash);
+  } catch (error) {
+    console.error('[auth/login] Could not verify the stored password hash:', error);
+    return response.status(500).json({ message: 'The account password record could not be verified. Please ask an administrator to reset the password.' });
+  }
   if (!valid) return response.status(401).json({ message: 'That password is incorrect. Try again or ask your ministry administrator to reset it.' });
-  return response.json(issueSession(user));
+  try {
+    return response.json(issueSession(user));
+  } catch (error) {
+    console.error('[auth/login] Could not issue a session token:', error);
+    return response.status(503).json({ message: 'The sign-in service is not fully configured. Please contact the system administrator.' });
+  }
 });
 
 export default router;
