@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-require("dotenv/config");
+const dotenv_1 = __importDefault(require("dotenv"));
 const cors_1 = __importDefault(require("cors"));
 const express_1 = __importDefault(require("express"));
 const node_path_1 = __importDefault(require("node:path"));
@@ -15,8 +15,10 @@ const choir_1 = __importDefault(require("./routes/choir"));
 const users_1 = __importDefault(require("./routes/users"));
 const prisma_1 = require("./lib/prisma");
 const auth_2 = require("./middleware/auth");
+const envPath = node_path_1.default.resolve(__dirname, '../.env');
+dotenv_1.default.config({ path: envPath });
 if (!process.env.DATABASE_URL || !process.env.JWT_SECRET) {
-    throw new Error('Server configuration missing. Copy server/.env.example to server/.env, set DATABASE_URL and JWT_SECRET, and start PostgreSQL before running the API.');
+    throw new Error(`Server configuration missing: DATABASE_URL and JWT_SECRET are required. Add them to ${envPath} (copy .env.example as a template and replace its placeholders) or export them in the environment, then run the API again.`);
 }
 const app = (0, express_1.default)();
 const allowedOrigins = new Set((process.env.CORS_ORIGINS ?? 'http://localhost:5173,http://127.0.0.1:5173')

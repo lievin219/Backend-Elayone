@@ -1,4 +1,4 @@
-import 'dotenv/config';
+import dotenv from 'dotenv';
 import cors from 'cors';
 import express, { ErrorRequestHandler } from 'express';
 import path from 'node:path';
@@ -11,8 +11,11 @@ import userRoutes from './routes/users';
 import { prisma } from './lib/prisma';
 import { requireAuth } from './middleware/auth';
 
+const envPath = path.resolve(__dirname, '../.env');
+dotenv.config({ path: envPath });
+
 if (!process.env.DATABASE_URL || !process.env.JWT_SECRET) {
-  throw new Error('Server configuration missing. Copy server/.env.example to server/.env, set DATABASE_URL and JWT_SECRET, and start PostgreSQL before running the API.');
+  throw new Error(`Server configuration missing: DATABASE_URL and JWT_SECRET are required. Add them to ${envPath} (copy .env.example as a template and replace its placeholders) or export them in the environment, then run the API again.`);
 }
 
 const app = express();

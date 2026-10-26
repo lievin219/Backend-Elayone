@@ -14,10 +14,9 @@ router.post('/:choirId/songs', auth_1.requireAdmin, media_upload_1.uploadMedia, 
     if (typeof title !== 'string' || !title.trim()) {
         return response.status(400).json({ message: 'Song title is required.' });
     }
-    if (!request.file && (typeof previewUrl !== 'string' || !previewUrl.trim()))
-        return response.status(400).json({ message: 'Attach an MP3 or MP4 file, or provide a preview URL.' });
     if (request.file && !['audio/mpeg', 'audio/mp3', 'video/mp4', 'audio/mp4'].includes(request.file.mimetype))
         return response.status(400).json({ message: 'Only MP3 and MP4 files are supported.' });
+    const externalPreviewUrl = typeof previewUrl === 'string' && previewUrl.trim() ? previewUrl.trim() : null;
     let media = null;
     if (request.file) {
         try {
@@ -39,7 +38,7 @@ router.post('/:choirId/songs', auth_1.requireAdmin, media_upload_1.uploadMedia, 
                 key: key ? String(key).trim() : null,
                 status: status === 'READY' || status === 'LEARN' ? status : 'LEARN',
                 notes: notes ? String(notes).trim() : null,
-                previewUrl: media?.publicUrl ?? (previewUrl ? String(previewUrl).trim() : null),
+                previewUrl: media?.publicUrl ?? externalPreviewUrl,
             },
         });
     }

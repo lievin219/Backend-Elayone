@@ -7,8 +7,8 @@ const express_1 = require("express");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const zod_1 = require("zod");
 const prisma_1 = require("../lib/prisma");
-const email_1 = require("../lib/email");
 const auth_1 = require("../middleware/auth");
+const member_email_1 = require("../lib/member-email");
 const router = (0, express_1.Router)();
 const newMemberSchema = zod_1.z.object({
     name: zod_1.z.string().trim().min(2, 'Enter the member’s full name.'),
@@ -24,7 +24,6 @@ router.get('/', auth_1.requireAdministrator, async (_request, response) => {
             email: true,
             role: true,
             createdAt: true,
-            emailVerifiedAt: true,
             memberships: { select: { choirId: true, ministryTeam: true, availability: true } },
         },
         orderBy: { createdAt: 'desc' },
@@ -36,20 +35,16 @@ router.post('/', auth_1.requireAdministrator, async (request, response) => {
     if (!parsed.success)
         return response.status(400).json({ message: parsed.error.issues[0].message });
     const { name, email, password, ministryTeam } = parsed.data;
+    try {
+        (0, member_email_1.validateMemberEmailConfiguration)();
+    }
+    catch (error) {
+        const message = error instanceof Error ? error.message : 'Member email is not configured.';
+        return response.status(503).json({ message });
+    }
     const existing = await prisma_1.prisma.user.findUnique({ where: { email }, select: { id: true } });
     if (existing)
         return response.status(409).json({ message: 'An account already uses that email. Try signing in or enter a different address.' });
-    try {
-        await (0, email_1.verifyEmailDelivery)();
-    }
-    catch (error) {
-        if (error instanceof email_1.EmailConfigurationError || error instanceof email_1.EmailDeliveryError) {
-            console.error('[users] Email delivery is not ready; account was not created:', error);
-            return response.status(503).json({ message: 'Email delivery is not ready, so the account was not created. Check the backend email provider settings and verified sender address, then try again.' });
-        }
-        throw error;
-    }
-    const verification = (0, email_1.createEmailVerificationToken)();
     const passwordHash = await bcryptjs_1.default.hash(password, 12);
     const user = await prisma_1.prisma.$transaction(async (transaction) => {
         const choir = await transaction.choir.upsert({
@@ -63,78 +58,31 @@ router.post('/', auth_1.requireAdministrator, async (request, response) => {
                 email,
                 passwordHash,
                 role: 'MEMBER',
-                emailVerificationTokenHash: verification.tokenHash,
-                emailVerificationExpiresAt: verification.expiresAt,
             },
-            select: { id: true, name: true, email: true, role: true, createdAt: true, emailVerifiedAt: true },
+            select: { id: true, name: true, email: true, role: true, createdAt: true },
         });
         await transaction.membership.create({ data: { userId: created.id, choirId: choir.id, ministryTeam } });
         return created;
     });
     try {
-        await (0, email_1.sendAccountCredentials)({ name, email, password, ministryTeam, verificationToken: verification.token });
+        await (0, member_email_1.sendNewMemberCredentials)({ email: user.email, name: user.name, password });
     }
     catch (error) {
-        console.error(`[users] Account created for ${email}, but the confirmation email could not be sent:`, error);
-        return response.status(502).json({
-            message: 'The account was created, but its confirmation email could not be sent. Check the SMTP sender configuration and use the resend-confirmation action before trying to create the account again.',
-            accountCreated: true,
-            userId: user.id,
-        });
+        console.error('[email] Could not send new member credentials:', error);
+        try {
+            await prisma_1.prisma.user.delete({ where: { id: user.id } });
+            return response.status(502).json({ message: 'The account was not saved because the sign-in email could not be delivered. Check the email service settings and try again.' });
+        }
+        catch (cleanupError) {
+            console.error('[users] Could not roll back account after email failure:', cleanupError);
+            return response.status(500).json({ message: 'The sign-in email could not be delivered, and the account may already exist. Check the member list before retrying.' });
+        }
     }
     return response.status(201).json({
         ...user,
-        memberships: [{ choirId: 'elayone-main-choir', ministryTeam, availability: 'PENDING' }],
         emailSent: true,
-        emailVerified: false,
+        memberships: [{ choirId: 'elayone-main-choir', ministryTeam, availability: 'PENDING' }],
     });
-});
-router.post('/:userId/email-verification/resend', auth_1.requireAdministrator, async (request, response) => {
-    const targetUser = await prisma_1.prisma.user.findUnique({
-        where: { id: String(request.params.userId) },
-        select: {
-            id: true,
-            name: true,
-            email: true,
-            emailVerifiedAt: true,
-            memberships: { select: { ministryTeam: true }, take: 1 },
-        },
-    });
-    if (!targetUser)
-        return response.status(404).json({ message: 'User not found.' });
-    if (targetUser.emailVerifiedAt)
-        return response.status(409).json({ message: 'This email address has already been confirmed.' });
-    try {
-        await (0, email_1.verifyEmailDelivery)();
-    }
-    catch (error) {
-        if (error instanceof email_1.EmailConfigurationError || error instanceof email_1.EmailDeliveryError) {
-            console.error('[users] Email delivery is not ready; confirmation email was not sent:', error);
-            return response.status(503).json({ message: 'Email delivery is not ready. Check the backend email provider settings and verified sender address.' });
-        }
-        throw error;
-    }
-    const verification = (0, email_1.createEmailVerificationToken)();
-    await prisma_1.prisma.user.update({
-        where: { id: targetUser.id },
-        data: {
-            emailVerificationTokenHash: verification.tokenHash,
-            emailVerificationExpiresAt: verification.expiresAt,
-        },
-    });
-    try {
-        await (0, email_1.sendEmailVerification)({
-            name: targetUser.name,
-            email: targetUser.email,
-            ministryTeam: targetUser.memberships[0]?.ministryTeam ?? 'SINGERS',
-            verificationToken: verification.token,
-        });
-    }
-    catch (error) {
-        console.error(`[users] Could not resend the email confirmation to ${targetUser.email}:`, error);
-        return response.status(502).json({ message: 'The confirmation email could not be sent. Check the SMTP sender configuration and try again.' });
-    }
-    return response.json({ message: 'A new email confirmation link was sent.' });
 });
 router.patch('/:userId/role', auth_1.requireAdministrator, async (request, response) => {
     const { role } = request.body ?? {};

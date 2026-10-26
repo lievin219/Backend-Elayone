@@ -6,15 +6,14 @@ The Express API connects to PostgreSQL; never connect the browser directly to th
 
 ### Local development
 
-Install PostgreSQL 16 (`brew install postgresql@16` on macOS), then copy `.env.example` to `.env`. Replace `YOUR_POSTGRES_USER` in `DATABASE_URL` with your local PostgreSQL role (on a default Homebrew setup, this is usually your macOS username), and set `JWT_SECRET`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD`. Use a unique admin password with at least 12 characters. The database uses port `5433`, matching `db:start`.
+From this `Backend-Elayone` directory, copy `.env.example` to `.env` and replace its placeholders with your database URLs and a unique `JWT_SECRET`. The API loads `.env` from its working directory. Keep the real file private and never commit it. For a Supabase database, use the session pooler URL for `DATABASE_URL` and the direct connection URL for `DIRECT_URL`; both should require TLS. `ADMIN_EMAIL` and `ADMIN_PASSWORD` are needed only when seeding the initial administrator. Use a unique administrator password of at least 12 characters.
 
 ```bash
-cp server/.env.example server/.env
-npm run backend:setup
-npm run server:dev
+cp .env.example .env
+npm run dev
 ```
 
-Edit `server/.env` first: replace `YOUR_POSTGRES_USER` and change the example JWT and administrator password. Set `DIRECT_URL` to the same local connection as `DATABASE_URL`. `backend:setup` initializes/starts PostgreSQL, creates the named database, applies migrations, and seeds the configured administrator plus sample ministry content (but no songs). It is safe to rerun locally. The API runs on `http://localhost:4000`; the Vite app uses `VITE_API_URL` in `frontend/.env` when the API is elsewhere.
+If this checkout is opened at its parent folder, the corresponding file path is `server/Backend-Elayone/.env`; run the commands above after changing into that folder. The API listens on `http://localhost:4000`. To apply migrations, configure both database URLs first and run `npm run db:deploy`; to create/update the initial admin and sample ministry content, run `npm run db:seed`. The frontend uses `VITE_API_URL` when the API is elsewhere.
 
 ### Supabase production database
 
@@ -25,16 +24,12 @@ Create a Supabase project in the Supabase dashboard and keep its database passwo
 - `JWT_SECRET`: a new, unique, randomly generated production signing secret.
 - `ADMIN_EMAIL` and `ADMIN_PASSWORD`: the initial administrator credentials; use a unique password of at least 12 characters.
 - `CORS_ORIGINS`: the exact HTTPS origin(s) serving the frontend, comma-separated, with no trailing slash.
-- `EMAIL_PROVIDER`: `smtp` (default) or `resend`. Use `resend` when the hosting provider blocks outbound SMTP.
-- `EMAIL_FROM`: a plain sender email address whose domain/address is verified with the email provider. For backward compatibility, SMTP also accepts `SMTP_FROM` if `EMAIL_FROM` is not set.
-- For `EMAIL_PROVIDER=smtp`, set `SMTP_HOST`, `SMTP_USER`, and `SMTP_PASSWORD`; `SMTP_PORT` defaults to `587`; `SMTP_SECURE` defaults to `true` on port `465` and `false` otherwise. Use the SMTP provider's app password or credential, not a personal account password.
-- For `EMAIL_PROVIDER=resend`, set `RESEND_API_KEY`. The API checks the key and verifies that the sender domain is verified in Resend before creating an account, then sends over HTTPS.
-- `API_PUBLIC_URL`: this API's public base URL, such as `https://api.example.com` in production or `http://localhost:4000` locally. Confirmation links use it; production requires HTTPS.
+- `RESEND_API_KEY` and `EMAIL_FROM` (recommended): Resend API key and a sender address on a domain verified with Resend. The API uses HTTPS, which is generally more reliable for Render deployments than opening SMTP connections.
+- Alternatively, configure `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASSWORD`, and `SMTP_FROM` for a mail provider that permits connections from your hosting plan. Keep its password private.
+- `FRONTEND_URL`: public frontend origin, such as `https://app.elayonemusic.org`; new members receive this sign-in link.
 - `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` (or `SUPABASE_SECRET_KEY`), and `SUPABASE_SONGS_BUCKET`: the Supabase project URL, server-only key, and public Storage bucket used for uploaded song media. The bucket defaults to `song-media`.
 
-Set these as **backend deployment secrets/environment variables**, not in frontend build settings or committed files. Keep the pooled and direct database URLs private, and never expose the service-role key, SMTP credentials, or Resend API key to the frontend. Verify the sender domain (`EMAIL_FROM`) with your email provider and configure its recommended SPF/DKIM DNS records; credentials alone do not authorize an arbitrary sender. Before creating accounts, the API validates the sender and checks the SMTP connection/authentication or Resend API key/domain status. Some hosts, including Render, block outbound SMTP; configure `EMAIL_PROVIDER=resend` on those hosts to send over HTTPS. Create the configured Storage bucket (`song-media` by default) in Supabase and make it public so song previews can be played by choir members. The app already uses Prisma's pooled URL for normal queries and the direct URL for schema changes.
-
-When an administrator creates a singer or band account, the API emails the login credentials and a single-use confirmation link to that address. The member must confirm ownership before signing in; the link expires after 24 hours. Existing accounts are marked confirmed by the migration. If the selected email provider cannot be reached or authenticated, account creation is stopped. If sending fails after account creation, the API returns the account ID; an administrator can send a new link with `POST /api/users/:userId/email-verification/resend` rather than creating the account again. Members should change their temporary password after signing in.
+Set these as **backend deployment secrets/environment variables**, not in frontend build settings or committed files. Keep the pooled and direct database URLs, mail API/SMTP credentials, JWT secret, and Supabase service key private; never expose them to the frontend. On Render, set `RESEND_API_KEY`, `EMAIL_FROM`, and `FRONTEND_URL` in the backend service's Environment settings, then redeploy. Verify the sender domain with Resend before testing delivery. When an administrator creates a member, the API emails the sign-in link and temporary password. The account is only created if email delivery succeeds; on a delivery failure the API attempts to remove the just-created account and returns an error. Email is used only for delivering credentials; it does not add signup, authentication, or email-verification flows. Create the configured Storage bucket (`song-media` by default) in Supabase and make it public so song previews can be played by choir members. The app uses Prisma's pooled URL for normal queries and the direct URL for schema changes.
 
 Deploy the API on a Node.js host. From the repository root, install and build it with `npm ci --prefix server` and `npm run server:build`. Set its start command to `npm run server:start` and configure the backend environment variables listed above in the host dashboard. The host must provide a public HTTPS API URL. Set `VITE_API_URL` to that API URL in the frontend hosting provider, then rebuild and deploy the frontend. The browser talks to the API, and only the API talks to Supabase.
 
@@ -97,7 +92,6 @@ The idea is to build once and reuse the same information across the WorshipTools
 
 Routes:
 
-- `GET /api/auth/verify-email` and `POST /api/auth/verify-email` (email confirmation)
 - `POST /api/auth/signup` (disabled; accounts are administrator-created)
 - `POST /api/auth/login`
 - `GET /api/choirs/me`
@@ -115,7 +109,6 @@ Routes:
 - `GET` and `POST /api/choirs/:choirId/songs`
 - `DELETE /api/choirs/:choirId/songs/:songId`
 - `GET` and `POST /api/users`
-- `POST /api/users/:userId/email-verification/resend`
 - `PATCH /api/users/:userId/role`
 - `PATCH /api/users/:userId/password` (administrator reset)
 - `PATCH /api/users/:userId/password/self`

@@ -7,7 +7,7 @@
     "postinstall": "prisma generate",
     "predev": "npm run db:generate",
     "dev": "tsx watch src/index.ts",
-    "prestart": "npm run db:generate",
+    "prestart": "npm run build",
     "prebuild": "npm run db:generate",
     "start": "node dist/index.js",
     "db:generate": "node -r dotenv/config ./node_modules/prisma/build/index.js generate --schema prisma/schema.prisma",
