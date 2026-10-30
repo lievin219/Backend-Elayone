@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { prisma } from '../../lib/prisma';
 import {
+  getPlayableSongUrl,
   getSongMediaPath,
   removeSongMedia,
   SongMediaConfigurationError,
@@ -12,7 +13,12 @@ import { uploadMedia } from './media-upload';
 const router = Router();
 
 router.get('/:choirId/songs', requireChoirAccess, async (request, response) => {
-  return response.json(await prisma.song.findMany({ where: { choirId: String(request.params.choirId) }, orderBy: { title: 'asc' } }));
+  const songs = await prisma.song.findMany({ where: { choirId: String(request.params.choirId) }, orderBy: { title: 'asc' } });
+  const songsWithPlaybackUrls = await Promise.all(songs.map(async (song) => ({
+    ...song,
+    previewUrl: await getPlayableSongUrl(song.previewUrl),
+  })));
+  return response.json(songsWithPlaybackUrls);
 });
 
 router.post('/:choirId/songs', requireAdmin, uploadMedia, async (request, response) => {
@@ -55,7 +61,10 @@ router.post('/:choirId/songs', requireAdmin, uploadMedia, async (request, respon
     }
     throw error;
   }
-  return response.status(201).json(song);
+  return response.status(201).json({
+    ...song,
+    previewUrl: await getPlayableSongUrl(song.previewUrl),
+  });
 });
 
 router.delete('/:choirId/songs/:songId', requireAdmin, async (request, response) => {

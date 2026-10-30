@@ -123,7 +123,7 @@ router.patch('/:userId/ministry-team', requireAdministrator, async (request, res
   const membership = await prisma.membership.findUnique({
     where: { userId_choirId: { userId: String(request.params.userId), choirId: parsed.data.choirId } },
   });
-  if (!membership) return response.status(404).json({ message: 'This person is not part of this ministry.' });
+  if (!membership) return response.status(404).json({ message: 'This person is not part of Elayone ministry.' });
 
   const updated = await prisma.membership.update({
     where: { id: membership.id },

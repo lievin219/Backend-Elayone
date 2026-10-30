@@ -23,7 +23,7 @@ router.get('/:choirId/attendance/report', requireChoirAccess, async (request: Au
   if (!canViewAll && memberships.length === 0) return response.status(403).json({ message: 'You must be part of this ministry to view attendance.' });
   const rehearsals = await prisma.rehearsal.findMany({
     where: { choirId },
-    include: { attendances: { select: { userId: true, status: true } }, invitations: { select: { userId: true } } },
+    include: { eventResponses: { select: { userId: true, status: true } }, invitations: { select: { userId: true } } },
     orderBy: { startsAt: 'desc' },
   });
   const members = buildAttendanceMembers(memberships, rehearsals, canViewAll);

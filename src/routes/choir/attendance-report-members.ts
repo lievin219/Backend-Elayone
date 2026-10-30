@@ -3,7 +3,7 @@ export function buildAttendanceMembers(memberships: any[], rehearsals: any[], ca
     const events = rehearsals.flatMap((rehearsal) => {
       const inviteeIds = rehearsal.invitations.map((invitation: any) => invitation.userId);
       if (inviteeIds.length > 0 && !inviteeIds.includes(membership.userId)) return [];
-      const status = rehearsal.attendances.find((entry: any) => entry.userId === membership.userId)?.status ?? 'PENDING';
+      const status = rehearsal.eventResponses.find((entry: any) => entry.userId === membership.userId)?.status ?? 'PENDING';
       return [{
         rehearsalId: rehearsal.id, title: rehearsal.title, eventType: rehearsal.eventType,
         customEventType: rehearsal.customEventType, eventTypeName: rehearsal.customEventType ?? rehearsal.eventType,

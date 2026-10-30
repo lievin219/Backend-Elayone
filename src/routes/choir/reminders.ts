@@ -12,15 +12,16 @@ router.get('/:choirId/reminders', requireChoirAccess, async (request: AuthReques
   const canManage = viewer?.role === 'ADMIN' || viewer?.role === 'LEADER';
   const now = new Date();
   const horizon = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
+  const memberCount = await prisma.membership.count({ where: { choirId } });
   const events = await prisma.rehearsal.findMany({
     where: { choirId, startsAt: { gte: now, lte: horizon } },
     include: {
-      attendances: { select: { userId: true, status: true } },
+      eventResponses: { select: { userId: true, status: true } },
       invitations: { select: { userId: true } },
     },
     orderBy: { startsAt: 'asc' },
   });
-  return response.json(buildEventReminders(events, userId, canManage, now));
+  return response.json(buildEventReminders(events.map((event) => ({ ...event, memberCount })), userId, canManage, now));
 });
 
 

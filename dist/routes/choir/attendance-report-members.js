@@ -7,7 +7,7 @@ function buildAttendanceMembers(memberships, rehearsals, canViewAll) {
             const inviteeIds = rehearsal.invitations.map((invitation) => invitation.userId);
             if (inviteeIds.length > 0 && !inviteeIds.includes(membership.userId))
                 return [];
-            const status = rehearsal.attendances.find((entry) => entry.userId === membership.userId)?.status ?? 'PENDING';
+            const status = rehearsal.eventResponses.find((entry) => entry.userId === membership.userId)?.status ?? 'PENDING';
             return [{
                     rehearsalId: rehearsal.id, title: rehearsal.title, eventType: rehearsal.eventType,
                     customEventType: rehearsal.customEventType, eventTypeName: rehearsal.customEventType ?? rehearsal.eventType,

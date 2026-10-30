@@ -14,7 +14,7 @@ router.get('/:choirId/rehearsals', requireChoirAccess, async (request: AuthReque
     where: { choirId },
     orderBy: { startsAt: 'asc' },
     include: {
-      attendances: { select: { userId: true, status: true } },
+      eventResponses: { select: { userId: true, status: true } },
       invitations: { include: { user: { select: { id: true, name: true } } } },
       eventSongs: eventSongInclude,
     },
@@ -40,14 +40,14 @@ router.get('/:choirId/rehearsals', requireChoirAccess, async (request: AuthReque
     createdAt: event.createdAt,
     invitationOnly: event.invitations.length > 0,
     invited: event.invitations.length === 0 || event.invitations.some((invitation) => invitation.userId === userId),
-    myStatus: event.attendances.find((attendance) => attendance.userId === userId)?.status ?? 'PENDING',
-    confirmedCount: event.attendances.filter((attendance) => attendance.status === 'YES').length,
+    myStatus: event.eventResponses.find((entry) => entry.userId === userId)?.status ?? 'PENDING',
+    confirmedCount: event.eventResponses.filter((entry) => entry.status === 'YES').length,
     songs: serializeEventSongs(event.eventSongs),
     invitees: canManage ? (event.invitations.length > 0
       ? event.invitations.map((invitation) => ({ userId: invitation.userId, name: invitation.user.name }))
       : choirMembers.map((member) => ({ userId: member.user.id, name: member.user.name }))).map((invitee) => ({
         ...invitee,
-        status: event.attendances.find((attendance) => attendance.userId === invitee.userId)?.status ?? 'PENDING',
+        status: event.eventResponses.find((entry) => entry.userId === invitee.userId)?.status ?? 'PENDING',
       })) : undefined,
   })));
 });

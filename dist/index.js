@@ -15,13 +15,14 @@ const choir_1 = __importDefault(require("./routes/choir"));
 const users_1 = __importDefault(require("./routes/users"));
 const prisma_1 = require("./lib/prisma");
 const auth_2 = require("./middleware/auth");
+const member_email_1 = require("./lib/member-email");
 const envPath = node_path_1.default.resolve(__dirname, '../.env');
 dotenv_1.default.config({ path: envPath });
 if (!process.env.DATABASE_URL || !process.env.JWT_SECRET) {
     throw new Error(`Server configuration missing: DATABASE_URL and JWT_SECRET are required. Add them to ${envPath} (copy .env.example as a template and replace its placeholders) or export them in the environment, then run the API again.`);
 }
 const app = (0, express_1.default)();
-const allowedOrigins = new Set((process.env.CORS_ORIGINS ?? 'http://localhost:5173,http://127.0.0.1:5173')
+const allowedOrigins = new Set((process.env.CORS_ORIGINS ?? 'http://localhost:5173,http://127.0.0.1:5173,https://app.elayonemusic.org')
     .split(',')
     .map((origin) => origin.trim())
     .filter(Boolean));
@@ -40,7 +41,12 @@ app.use('/uploads', express_1.default.static(node_path_1.default.resolve(process
 app.get('/health', async (_request, response) => {
     try {
         await prisma_1.prisma.$queryRaw `SELECT 1`;
-        return response.json({ ok: true, service: 'elayone-choir-api', database: 'connected' });
+        return response.json({
+            ok: true,
+            service: 'elayone-choir-api',
+            database: 'connected',
+            email: (0, member_email_1.getMemberEmailStatus)(),
+        });
     }
     catch (error) {
         console.error('[health] Database connection failed:', error);

@@ -14,7 +14,7 @@ function getPostgresToolPath(tool: string) {
 
 function main() {
   const connectionString = process.env.DATABASE_URL;
-  if (!connectionString) throw new Error('DATABASE_URL is missing. Set it in server/.env first.');
+  if (!connectionString) throw new Error('Database  is not connected could you please try to check the server and reconnect.');
 
   const databaseUrl = new URL(connectionString);
   const databaseName = decodeURIComponent(databaseUrl.pathname.replace(/^\/+/, ''));

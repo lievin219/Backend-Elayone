@@ -48,6 +48,7 @@ model User {
   createdAt    DateTime     @default(now())
   memberships  Membership[]
   attendances  Attendance[]
+  eventResponses EventResponse[]
   assignments  Assignment[]
   eventInvitations EventInvitation[]
   announcements Announcement[] @relation("AnnouncementAuthor")
@@ -91,6 +92,7 @@ model Rehearsal {
   location      String
   choir         Choir          @relation(fields: [choirId], references: [id], onDelete: Cascade)
   attendances   Attendance[]
+  eventResponses EventResponse[]
   assignments   Assignment[]
   announcements Announcement[]
   invitations  EventInvitation[]
@@ -103,7 +105,19 @@ model Attendance {
   rehearsalId String
   userId      String
   present     Boolean          @default(false)
-  status      AttendanceStatus @default(PENDING)
+  rehearsal   Rehearsal        @relation(fields: [rehearsalId], references: [id], onDelete: Cascade)
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([rehearsalId, userId])
+}
+
+model EventResponse {
+  id          String           @id @default(cuid())
+  rehearsalId String
+  userId      String
+  status      AttendanceStatus
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
   rehearsal   Rehearsal        @relation(fields: [rehearsalId], references: [id], onDelete: Cascade)
   user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
 

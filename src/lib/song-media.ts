@@ -1,7 +1,9 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { randomUUID } from 'node:crypto';
 
-const bucket = process.env.SUPABASE_SONGS_BUCKET || 'song-media';
+function getBucketName() {
+  return process.env.SUPABASE_SONGS_BUCKET || 'song-media';
+}
 const extensions: Record<string, string> = {
   'audio/mpeg': 'mp3',
   'audio/mp3': 'mp3',
@@ -24,7 +26,7 @@ function getStorageClient() {
   client ??= createClient(url, serviceRoleKey, {
     auth: { autoRefreshToken: false, persistSession: false },
   });
-  return client.storage.from(bucket);
+  return client.storage.from(getBucketName());
 }
 
 export async function uploadSongMedia(file: { buffer: Buffer; mimetype: string }) {
@@ -51,13 +53,29 @@ export async function removeSongMedia(path: string) {
   if (error) throw new Error(`Could not remove song media from Supabase Storage: ${error.message}`);
 }
 
+export async function getPlayableSongUrl(previewUrl: string | null) {
+  if (!previewUrl) return null;
+  const path = getSongMediaPath(previewUrl);
+  if (!path) return previewUrl;
+
+  const { data, error } = await getStorageClient().createSignedUrl(path, 60 * 60);
+  if (error || !data?.signedUrl) {
+    throw new Error(`Could not create a playback link for uploaded song media: ${error?.message ?? 'No signed URL was returned.'}`);
+  }
+  return data.signedUrl;
+}
+
 export function getSongMediaPath(publicUrl: string) {
   const url = process.env.SUPABASE_URL;
   if (!url) return null;
-  const prefix = `${url.replace(/\/$/, '')}/storage/v1/object/public/${bucket}/`;
+  const prefix = `${url.replace(/\/$/, '')}/storage/v1/object/public/${getBucketName()}/`;
   if (!publicUrl.startsWith(prefix)) return null;
 
-  const path = decodeURIComponent(publicUrl.slice(prefix.length));
-  if (!path.startsWith('songs/') || path.includes('..')) return null;
-  return path;
+  try {
+    const path = decodeURIComponent(publicUrl.slice(prefix.length));
+    if (!path.startsWith('songs/') || path.includes('..')) return null;
+    return path;
+  } catch {
+    return null;
+  }
 }

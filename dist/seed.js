@@ -39,7 +39,7 @@ async function main() {
         update: { startsAt: eventStart, endsAt: eventEnd },
         create: { id: 'elayone-first-rehearsal', choirId: choir.id, title: 'Sunday service set', startsAt: eventStart, endsAt: eventEnd, location: 'Main sanctuary' },
     });
-    await prisma.attendance.upsert({ where: { rehearsalId_userId: { rehearsalId: rehearsal.id, userId: admin.id } }, update: { status: 'YES', present: true }, create: { rehearsalId: rehearsal.id, userId: admin.id, status: 'YES', present: true } });
+    await prisma.eventResponse.upsert({ where: { rehearsalId_userId: { rehearsalId: rehearsal.id, userId: admin.id } }, update: { status: 'YES' }, create: { rehearsalId: rehearsal.id, userId: admin.id, status: 'YES' } });
     await prisma.announcement.upsert({
         where: { id: 'elayone-welcome-announcement' },
         update: {},

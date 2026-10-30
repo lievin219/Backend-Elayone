@@ -8,8 +8,8 @@ router.get('/:choirId/attendance/summary', requireChoirAccess, async (request: A
   const userId = request.userId as string;
   const choirId = String(request.params.choirId);
   const [total, confirmed, upcoming] = await Promise.all([
-    prisma.attendance.count({ where: { userId, rehearsal: { choirId } } }),
-    prisma.attendance.count({ where: { userId, rehearsal: { choirId }, status: 'YES' } }),
+    prisma.eventResponse.count({ where: { userId, rehearsal: { choirId } } }),
+    prisma.eventResponse.count({ where: { userId, rehearsal: { choirId }, status: 'YES' } }),
     prisma.rehearsal.count({
       where: {
         choirId,

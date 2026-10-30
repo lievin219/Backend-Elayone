@@ -7,7 +7,12 @@ const auth_1 = require("../../middleware/auth");
 const media_upload_1 = require("./media-upload");
 const router = (0, express_1.Router)();
 router.get('/:choirId/songs', auth_1.requireChoirAccess, async (request, response) => {
-    return response.json(await prisma_1.prisma.song.findMany({ where: { choirId: String(request.params.choirId) }, orderBy: { title: 'asc' } }));
+    const songs = await prisma_1.prisma.song.findMany({ where: { choirId: String(request.params.choirId) }, orderBy: { title: 'asc' } });
+    const songsWithPlaybackUrls = await Promise.all(songs.map(async (song) => ({
+        ...song,
+        previewUrl: await (0, song_media_1.getPlayableSongUrl)(song.previewUrl),
+    })));
+    return response.json(songsWithPlaybackUrls);
 });
 router.post('/:choirId/songs', auth_1.requireAdmin, media_upload_1.uploadMedia, async (request, response) => {
     const { title, key, status, notes, previewUrl } = request.body ?? {};
@@ -53,7 +58,10 @@ router.post('/:choirId/songs', auth_1.requireAdmin, media_upload_1.uploadMedia, 
         }
         throw error;
     }
-    return response.status(201).json(song);
+    return response.status(201).json({
+        ...song,
+        previewUrl: await (0, song_media_1.getPlayableSongUrl)(song.previewUrl),
+    });
 });
 router.delete('/:choirId/songs/:songId', auth_1.requireAdmin, async (request, response) => {
     const song = await prisma_1.prisma.song.findFirst({ where: { id: String(request.params.songId), choirId: String(request.params.choirId) } });

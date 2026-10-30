@@ -53,6 +53,19 @@ export function validateMemberEmailConfiguration() {
   getMemberEmailConfig();
 }
 
+export function getMemberEmailStatus() {
+  try {
+    const config = getMemberEmailConfig();
+    return { configured: true, provider: config.provider };
+  } catch (error) {
+    return {
+      configured: false,
+      provider: process.env.RESEND_API_KEY?.trim() ? 'resend' : 'smtp',
+      error: error instanceof Error ? error.message : 'Member email is not configured.',
+    };
+  }
+}
+
 function escapeHtml(value: string) {
   return value.replace(/[&<>"']/g, (character) => ({
     '&': '&amp;',

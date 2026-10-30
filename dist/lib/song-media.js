@@ -3,10 +3,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SongMediaConfigurationError = void 0;
 exports.uploadSongMedia = uploadSongMedia;
 exports.removeSongMedia = removeSongMedia;
+exports.getPlayableSongUrl = getPlayableSongUrl;
 exports.getSongMediaPath = getSongMediaPath;
 const supabase_js_1 = require("@supabase/supabase-js");
 const node_crypto_1 = require("node:crypto");
-const bucket = process.env.SUPABASE_SONGS_BUCKET || 'song-media';
+function getBucketName() {
+    return process.env.SUPABASE_SONGS_BUCKET || 'song-media';
+}
 const extensions = {
     'audio/mpeg': 'mp3',
     'audio/mp3': 'mp3',
@@ -26,7 +29,7 @@ function getStorageClient() {
     client ??= (0, supabase_js_1.createClient)(url, serviceRoleKey, {
         auth: { autoRefreshToken: false, persistSession: false },
     });
-    return client.storage.from(bucket);
+    return client.storage.from(getBucketName());
 }
 async function uploadSongMedia(file) {
     const extension = extensions[file.mimetype];
@@ -51,15 +54,32 @@ async function removeSongMedia(path) {
     if (error)
         throw new Error(`Could not remove song media from Supabase Storage: ${error.message}`);
 }
+async function getPlayableSongUrl(previewUrl) {
+    if (!previewUrl)
+        return null;
+    const path = getSongMediaPath(previewUrl);
+    if (!path)
+        return previewUrl;
+    const { data, error } = await getStorageClient().createSignedUrl(path, 60 * 60);
+    if (error || !data?.signedUrl) {
+        throw new Error(`Could not create a playback link for uploaded song media: ${error?.message ?? 'No signed URL was returned.'}`);
+    }
+    return data.signedUrl;
+}
 function getSongMediaPath(publicUrl) {
     const url = process.env.SUPABASE_URL;
     if (!url)
         return null;
-    const prefix = `${url.replace(/\/$/, '')}/storage/v1/object/public/${bucket}/`;
+    const prefix = `${url.replace(/\/$/, '')}/storage/v1/object/public/${getBucketName()}/`;
     if (!publicUrl.startsWith(prefix))
         return null;
-    const path = decodeURIComponent(publicUrl.slice(prefix.length));
-    if (!path.startsWith('songs/') || path.includes('..'))
+    try {
+        const path = decodeURIComponent(publicUrl.slice(prefix.length));
+        if (!path.startsWith('songs/') || path.includes('..'))
+            return null;
+        return path;
+    }
+    catch {
         return null;
-    return path;
+    }
 }

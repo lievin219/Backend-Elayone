@@ -10,6 +10,7 @@ import choirRoutes from './routes/choir';
 import userRoutes from './routes/users';
 import { prisma } from './lib/prisma';
 import { requireAuth } from './middleware/auth';
+import { getMemberEmailStatus } from './lib/member-email';
 
 const envPath = path.resolve(__dirname, '../.env');
 dotenv.config({ path: envPath });
@@ -20,7 +21,7 @@ if (!process.env.DATABASE_URL || !process.env.JWT_SECRET) {
 
 const app = express();
 const allowedOrigins = new Set(
-  (process.env.CORS_ORIGINS ?? 'http://localhost:5173,http://127.0.0.1:5173')
+  (process.env.CORS_ORIGINS ?? 'http://localhost:5173,http://127.0.0.1:5173,https://app.elayonemusic.org')
     .split(',')
     .map((origin) => origin.trim())
     .filter(Boolean),
@@ -40,7 +41,12 @@ app.use('/uploads', express.static(path.resolve(process.cwd(), 'uploads')));
 app.get('/health', async (_request, response) => {
   try {
     await prisma.$queryRaw`SELECT 1`;
-    return response.json({ ok: true, service: 'elayone-choir-api', database: 'connected' });
+    return response.json({
+      ok: true,
+      service: 'elayone-choir-api',
+      database: 'connected',
+      email: getMemberEmailStatus(),
+    });
   } catch (error) {
     console.error('[health] Database connection failed:', error);
     return response.status(503).json({ ok: false, service: 'elayone-choir-api', database: 'unavailable', message: 'We’re having trouble connecting right now. Please wait a moment and try again.' });
