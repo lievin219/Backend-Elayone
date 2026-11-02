@@ -48,6 +48,23 @@ export async function uploadSongMedia(file: { buffer: Buffer; mimetype: string }
   };
 }
 
+export async function createSongUpload(mimeType: string, fileName: string) {
+  const extension = extensions[mimeType];
+  if (!extension) throw new Error('Only MP3 and MP4 media files are supported.');
+  if (!fileName.trim()) throw new Error('A file name is required.');
+
+  const storage = getStorageClient();
+  const path = `songs/${randomUUID()}.${extension}`;
+  const { data, error } = await storage.createSignedUploadUrl(path, { upsert: false });
+  if (error || !data) throw new Error(`Could not prepare the song upload: ${error?.message ?? 'No signed upload URL was returned.'}`);
+
+  return {
+    path,
+    signedUrl: data.signedUrl,
+    publicUrl: storage.getPublicUrl(path).data.publicUrl,
+  };
+}
+
 export async function removeSongMedia(path: string) {
   const { error } = await getStorageClient().remove([path]);
   if (error) throw new Error(`Could not remove song media from Supabase Storage: ${error.message}`);

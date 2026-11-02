@@ -6,6 +6,25 @@ const song_media_1 = require("../../lib/song-media");
 const auth_1 = require("../../middleware/auth");
 const media_upload_1 = require("./media-upload");
 const router = (0, express_1.Router)();
+router.post('/:choirId/songs/upload-url', auth_1.requireAdmin, async (request, response) => {
+    const { mimeType, fileName, fileSize } = request.body ?? {};
+    if (!['audio/mpeg', 'audio/mp3', 'video/mp4', 'audio/mp4'].includes(mimeType)) {
+        return response.status(400).json({ message: 'Only MP3 and MP4 media files are supported.' });
+    }
+    if (!Number.isFinite(fileSize) || fileSize <= 0 || fileSize > 100 * 1024 * 1024) {
+        return response.status(413).json({ message: 'The media file must be between 1 byte and 100 MB.' });
+    }
+    try {
+        const upload = await (0, song_media_1.createSongUpload)(String(mimeType), String(fileName ?? 'song'));
+        return response.status(201).json(upload);
+    }
+    catch (error) {
+        if (error instanceof song_media_1.SongMediaConfigurationError) {
+            return response.status(503).json({ message: error.message });
+        }
+        return response.status(400).json({ message: error instanceof Error ? error.message : 'Could not prepare the song upload.' });
+    }
+});
 router.get('/:choirId/songs', auth_1.requireChoirAccess, async (request, response) => {
     const songs = await prisma_1.prisma.song.findMany({ where: { choirId: String(request.params.choirId) }, orderBy: { title: 'asc' } });
     const songsWithPlaybackUrls = await Promise.all(songs.map(async (song) => ({

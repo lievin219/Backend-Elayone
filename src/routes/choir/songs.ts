@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { prisma } from '../../lib/prisma';
 import {
+  createSongUpload,
   getPlayableSongUrl,
   getSongMediaPath,
   removeSongMedia,
@@ -11,6 +12,25 @@ import { requireAdmin, requireChoirAccess } from '../../middleware/auth';
 import { uploadMedia } from './media-upload';
 
 const router = Router();
+
+router.post('/:choirId/songs/upload-url', requireAdmin, async (request, response) => {
+  const { mimeType, fileName, fileSize } = request.body ?? {};
+  if (!['audio/mpeg', 'audio/mp3', 'video/mp4', 'audio/mp4'].includes(mimeType)) {
+    return response.status(400).json({ message: 'Only MP3 and MP4 media files are supported.' });
+  }
+  if (!Number.isFinite(fileSize) || fileSize <= 0 || fileSize > 100 * 1024 * 1024) {
+    return response.status(413).json({ message: 'The media file must be between 1 byte and 100 MB.' });
+  }
+  try {
+    const upload = await createSongUpload(String(mimeType), String(fileName ?? 'song'));
+    return response.status(201).json(upload);
+  } catch (error) {
+    if (error instanceof SongMediaConfigurationError) {
+      return response.status(503).json({ message: error.message });
+    }
+    return response.status(400).json({ message: error instanceof Error ? error.message : 'Could not prepare the song upload.' });
+  }
+});
 
 router.get('/:choirId/songs', requireChoirAccess, async (request, response) => {
   const songs = await prisma.song.findMany({ where: { choirId: String(request.params.choirId) }, orderBy: { title: 'asc' } });

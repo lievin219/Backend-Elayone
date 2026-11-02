@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SongMediaConfigurationError = void 0;
 exports.uploadSongMedia = uploadSongMedia;
+exports.createSongUpload = createSongUpload;
 exports.removeSongMedia = removeSongMedia;
 exports.getPlayableSongUrl = getPlayableSongUrl;
 exports.getSongMediaPath = getSongMediaPath;
@@ -46,6 +47,23 @@ async function uploadSongMedia(file) {
         throw new Error(`Could not upload song media to Supabase Storage: ${error.message}`);
     return {
         path,
+        publicUrl: storage.getPublicUrl(path).data.publicUrl,
+    };
+}
+async function createSongUpload(mimeType, fileName) {
+    const extension = extensions[mimeType];
+    if (!extension)
+        throw new Error('Only MP3 and MP4 media files are supported.');
+    if (!fileName.trim())
+        throw new Error('A file name is required.');
+    const storage = getStorageClient();
+    const path = `songs/${(0, node_crypto_1.randomUUID)()}.${extension}`;
+    const { data, error } = await storage.createSignedUploadUrl(path, { upsert: false });
+    if (error || !data)
+        throw new Error(`Could not prepare the song upload: ${error?.message ?? 'No signed upload URL was returned.'}`);
+    return {
+        path,
+        signedUrl: data.signedUrl,
         publicUrl: storage.getPublicUrl(path).data.publicUrl,
     };
 }
