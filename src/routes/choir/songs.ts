@@ -48,6 +48,16 @@ router.post('/:choirId/songs', requireAdmin, uploadMedia, async (request, respon
   }
   if (request.file && !['audio/mpeg', 'audio/mp3', 'video/mp4', 'audio/mp4'].includes(request.file.mimetype)) return response.status(400).json({ message: 'Only MP3 and MP4 files are supported.' });
   const externalPreviewUrl = typeof previewUrl === 'string' && previewUrl.trim() ? previewUrl.trim() : null;
+  if (externalPreviewUrl) {
+    try {
+      const preview = new URL(externalPreviewUrl);
+      if (preview.protocol !== 'https:' && preview.protocol !== 'http:') {
+        return response.status(400).json({ message: 'The preview URL must use HTTP or HTTPS.' });
+      }
+    } catch {
+      return response.status(400).json({ message: 'Enter a valid preview URL.' });
+    }
+  }
   let media = null;
   if (request.file) {
     try {
