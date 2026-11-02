@@ -1,0 +1,2 @@
+-- This verification migration is retained for migration-history compatibility.
+-- Email verification is intentionally not used by the application.
